@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { auth } from "../auth";
 
 export default function Patients() {
   const [pacientes, setPacientes] = useState([
@@ -62,6 +63,14 @@ export default function Patients() {
     setNuevo(paciente);
     setEditandoId(paciente.id);
   };
+
+  if (!auth.isAuthenticated) {
+    return (
+      <div className="text-center mt-20 text-gray-600 text-lg">
+        🔒 Debes iniciar sesión para acceder a la gestión de pacientes.
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">

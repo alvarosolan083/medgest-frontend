@@ -1,18 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simular login
-    auth.login(() => {
+
+    if (!email || !password) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Error al iniciar sesión");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("email", email); // Puedes usar data.user.email si lo retorna
+
+      alert("✅ Inicio de sesión exitoso");
       navigate("/dashboard");
-    });
+
+    } catch (error) {
+      alert(`❌ Error: ${error.message}`);
+    }
   };
 
   return (

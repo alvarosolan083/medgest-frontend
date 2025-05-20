@@ -1,12 +1,13 @@
-// src/pages/Dashboard.jsx
 import React from "react";
 
 export default function Dashboard() {
+  const email = localStorage.getItem("email");
+
   return (
     <>
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Panel de Control</h1>
-        <p className="text-sm text-gray-500">Bienvenido/a 👋</p>
+        <p className="text-sm text-gray-500">Bienvenido/a 👋 <strong>{email}</strong></p>
       </header>
 
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

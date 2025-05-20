@@ -1,17 +1,20 @@
-// src/auth.js
 export const auth = {
-  isAuthenticated: false,
-  user: null, // <-- nuevo campo
+  isAuthenticated: !!localStorage.getItem("token"),
+  user: JSON.parse(localStorage.getItem("user")) || null,
 
   login(email, cb) {
     auth.isAuthenticated = true;
-    auth.user = { email }; // <-- guardamos usuario
+    auth.user = { email };
+    localStorage.setItem("token", "true");
+    localStorage.setItem("user", JSON.stringify({ email }));
     setTimeout(cb, 100);
   },
 
   logout(cb) {
     auth.isAuthenticated = false;
-    auth.user = null; // <-- limpiamos usuario
+    auth.user = null;
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setTimeout(cb, 100);
   },
 };
