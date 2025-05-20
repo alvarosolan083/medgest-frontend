@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,31 +11,31 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Por favor, completa todos los campos.");
+      toast.error("Completa todos los campos");
       return;
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || "Error al iniciar sesión");
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Error al iniciar sesión");
       }
 
-      const data = await response.json();
+      const data = await res.json();
       localStorage.setItem("token", data.token);
-      localStorage.setItem("email", email); // Puedes usar data.user.email si lo retorna
+      localStorage.setItem("email", email);
 
-      alert("✅ Inicio de sesión exitoso");
+      toast.success("✅ Inicio de sesión exitoso");
       navigate("/dashboard");
 
-    } catch (error) {
-      alert(`❌ Error: ${error.message}`);
+    } catch (err) {
+      toast.error("❌ " + err.message);
     }
   };
 
@@ -45,34 +46,18 @@ export default function Login() {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-600">Correo electrónico</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="usuario@correo.com"
-            />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 border rounded-md" placeholder="usuario@correo.com" />
           </div>
           <div>
             <label className="block text-gray-600">Contraseña</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="********"
-            />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 border rounded-md" placeholder="********" />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
-          >
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition">
             Ingresar
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-500">
-          ¿No tienes cuenta?{" "}
-          <a href="/register" className="text-blue-600 hover:underline">Regístrate</a>
+          ¿No tienes cuenta? <a href="/register" className="text-blue-600 hover:underline">Regístrate</a>
         </p>
       </div>
     </div>
